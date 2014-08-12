@@ -27,6 +27,7 @@ public class ServiceEngine {
 
 	public static ServiceEngine bootstrap() {
 		if (instance == null) {
+
 			instance = new ServiceEngine();
 
 			logger.log(Level.INFO, "bootstrap serviceEngine");
@@ -55,6 +56,8 @@ public class ServiceEngine {
 			while (true) {
 				Worker worker = WorkerQueue.getInstance().take();
 				WorkerThread thread = threadPool.get();
+				logger.log(Level.INFO, "start thread:" + thread.getId()
+						+ " start a work");
 				thread.setWorker(worker);
 			}
 

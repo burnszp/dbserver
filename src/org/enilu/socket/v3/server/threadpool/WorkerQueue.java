@@ -27,21 +27,17 @@ public class WorkerQueue {
 	}
 
 	public void push(Worker work) {
-		synchronized (this) {
-			workers.offer(work);
-		}
+		workers.offer(work);
 
 	}
 
 	public Worker take() {
-		synchronized (this) {
 
-			try {
-				return workers.take();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			return null;
+		try {
+			return workers.take();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
+		return null;
 	}
 }
