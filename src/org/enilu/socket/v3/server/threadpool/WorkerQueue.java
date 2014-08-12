@@ -27,7 +27,10 @@ public class WorkerQueue {
 	}
 
 	public void push(Worker work) {
-		workers.offer(work);
+		synchronized (this) {
+			workers.offer(work);
+		}
+
 	}
 
 	public Worker take() {
