@@ -101,4 +101,27 @@ public class ThreadPool {
 		return busyCount;
 	}
 
+	/**
+	 * 
+	 */
+	public void shutdown() {
+		logger.log(Level.INFO, "threadPool shutdown...");
+		int workSize = WorkerQueue.getInstance().getWorkSize();
+		while (workSize > 0) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			workSize = WorkerQueue.getInstance().getWorkSize();
+		}
+		for (WorkerThread t : pool) {
+			if (t.getStatus() == WorkerThread.IDLE) {
+				t.release();
+			}
+		}
+		logger.log(Level.INFO, "threadPool shutdown ok");
+
+	}
+
 }

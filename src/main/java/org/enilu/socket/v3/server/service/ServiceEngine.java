@@ -20,14 +20,15 @@ public class ServiceEngine {
 			.getName());
 	static ServiceEngine instance;
 	static ThreadPool threadPool;
+	private static boolean isRunning = false;
 
 	private ServiceEngine() {
 
 	}
 
-	public static ServiceEngine bootstrap() {
+	public static ServiceEngine getInstance() {
 		if (instance == null) {
-
+			isRunning = true;
 			instance = new ServiceEngine();
 
 			logger.log(Level.INFO, "bootstrap serviceEngine");
@@ -37,6 +38,22 @@ public class ServiceEngine {
 
 		}
 		return instance;
+	}
+
+	/**
+	 * 停止数据库服务
+	 */
+	public void shutdown() {
+		while (isRunning) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+		}
+		threadPool.shutdown();
+
 	}
 
 	/**
@@ -55,6 +72,10 @@ public class ServiceEngine {
 
 			while (true) {
 				Worker worker = WorkerQueue.getInstance().take();
+				if ("shutdown".equals(worker.work())) {
+					isRunning = false;
+					break;
+				}
 				WorkerThread thread = threadPool.get();
 				logger.log(Level.INFO, "start thread:" + thread.getId()
 						+ " start a work");

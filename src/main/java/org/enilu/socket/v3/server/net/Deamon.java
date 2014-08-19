@@ -14,6 +14,8 @@ import java.util.logging.Logger;
 
 import org.enilu.socket.v3.commons.util.Constants;
 import org.enilu.socket.v3.server.service.ServiceEngine;
+import org.enilu.socket.v3.server.threadpool.ShutdownWorker;
+import org.enilu.socket.v3.server.threadpool.WorkerQueue;
 
 public class Deamon implements Runnable {
 	private static Logger logger = Logger.getLogger(Deamon.class.getName());
@@ -36,8 +38,7 @@ public class Deamon implements Runnable {
 			serverChannel.configureBlocking(false);
 			serverChannel.register(selector, SelectionKey.OP_ACCEPT);
 			this.clientChannels = new ArrayList<SocketChannel>();
-			ServiceEngine.bootstrap();
-			// ThreadPool.getTheadPool();
+			ServiceEngine.getInstance();
 		} catch (IOException e) {
 			logger.log(Level.SEVERE,
 					"Error while building server : " + e.getMessage());
@@ -75,7 +76,18 @@ public class Deamon implements Runnable {
 								this.clientChannels, 12);
 
 						if ("stop".equals(result)) {
-							logger.log(Level.INFO, "socket服务停止中...");
+							logger.log(Level.INFO, "server shutdown...");
+							for (SocketChannel client : this.clientChannels) {
+								try {
+									client.close();
+								} catch (IOException e) {
+									logger.log(Level.WARNING,
+											"close client error");
+								}
+							}
+							ShutdownWorker closeWorker = new ShutdownWorker();
+							WorkerQueue.getInstance().push(closeWorker);
+							ServiceEngine.getInstance().shutdown();
 							this.flag = false;
 						}
 					}
@@ -99,7 +111,7 @@ public class Deamon implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		logger.log(Level.INFO, "socket服务已停止");
+		logger.log(Level.INFO, "server shutdown ok");
 
 	}
 

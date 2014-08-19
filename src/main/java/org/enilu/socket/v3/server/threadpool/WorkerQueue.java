@@ -40,4 +40,11 @@ public class WorkerQueue {
 		}
 		return null;
 	}
+
+	/**
+	 * @return
+	 */
+	public int getWorkSize() {
+		return workers.size();
+	}
 }

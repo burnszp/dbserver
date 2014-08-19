@@ -7,5 +7,5 @@ package org.enilu.socket.v3.server.threadpool;
  * 
  */
 public abstract class Worker {
-	public abstract void work();
+	public abstract String work();
 }

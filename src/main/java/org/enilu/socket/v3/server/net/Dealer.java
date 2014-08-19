@@ -99,6 +99,8 @@ public class Dealer {
 						channel.close();
 						logger.log(Level.INFO, "client disconnect");
 						return null;
+					} else if ("stop".equals(flag)) {
+						return flag;
 					}
 				} catch (Exception e) {
 					logger.log(Level.SEVERE,

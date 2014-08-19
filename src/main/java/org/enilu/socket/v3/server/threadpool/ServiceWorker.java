@@ -37,7 +37,7 @@ public class ServiceWorker extends Worker {
 	}
 
 	@Override
-	public void work() {
+	public String work() {
 		logger.log(Level.INFO, "accept from client：" + sender.toString());
 		int opCode = sender.getHeader().getOpCode();
 		MsgReplay replay = null;
@@ -65,6 +65,7 @@ public class ServiceWorker extends Worker {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+		return null;
 	}
 
 }

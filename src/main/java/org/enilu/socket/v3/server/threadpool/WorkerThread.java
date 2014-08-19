@@ -18,6 +18,7 @@ public class WorkerThread extends Thread {
 	public static final int BUSY = 1;
 	private int id;// 线程id
 	private int status;// 0:idle,1:busy
+	private boolean isRunning = true;
 
 	public WorkerThread(int id) {
 		super();
@@ -46,7 +47,7 @@ public class WorkerThread extends Thread {
 
 	@Override
 	public void run() {
-		while (true) {
+		while (isRunning) {
 			if (this.status == WorkerThread.IDLE && this.worker != null) {
 				this.status = WorkerThread.BUSY;
 				logger.log(Level.INFO, "Thread " + id + "start work");
@@ -62,6 +63,13 @@ public class WorkerThread extends Thread {
 				}
 			}
 		}
+	}
+
+	/**
+	 * 清出先撑资源，关闭线程
+	 */
+	public void release() {
+		isRunning = false;
 	}
 
 }
